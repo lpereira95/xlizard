@@ -1,20 +1,20 @@
 
 import os
 
-
-from flinter.error_processing import (
-    fmt_analysis,
-    get_statements_errors,
-    get_vars_errors,
-    get_nesting_errors,
-    get_args_errors,
-)
-from flinter.parser.flizard.readers import (
+from flizard.readers import (
     PythonReader as fPythonReader,
     FortranReader as fFortranReader,
 )
-from flinter.parser.flizard.helpers import set_processors
-import flinter.parser.flizard._lizard as flizard
+
+# TODO: move to flinter?
+from flizard.helpers import set_processors
+from flizard._lizard import FileInfoBuilder
+
+__version__ = '0.1.0'
+
+
+# TODO: rename to xlizard?
+# TODO: some things should be moved back to flinter
 
 
 def _flanguages():
@@ -55,36 +55,6 @@ def _get_comment_spans(context):
     comments_spans.sort(key=lambda x: x[0])
 
     return comments_spans
-
-
-def _get_function_struct_errors(function, struct_rules):
-    errors = {}
-
-    get_statements_errors(
-        function.length,
-        max_lines=struct_rules["max-statements-in-context"],
-        errors=errors)
-
-    get_vars_errors(
-        function.local_vars,
-        max_declared_locals=struct_rules["max-declared-locals"],
-        min_var_len=struct_rules["min-varlen"],
-        max_var_len=struct_rules["max-varlen"],
-        errors=errors)
-
-    get_args_errors(
-        function.parameters,
-        max_arguments=struct_rules["max-arguments"],
-        min_arg_len=struct_rules["min-arglen"],
-        max_arg_len=struct_rules["max-arglen"],
-        errors=errors)
-
-    get_nesting_errors(
-        function.top_nesting_level,
-        max_depth=struct_rules["max-nesting-levels"],
-        errors=errors)
-
-    return errors
 
 
 def _from_function_to_dict(function, path):
@@ -139,39 +109,10 @@ def _nest_file(data):
     return child
 
 
-def _process_errors(context, path, content, rules):
-
-    function_list = context.fileinfo.function_list + [context.global_pseudo_function]
-
-    # struct errors
-    struct_errors = {}
-    for function in function_list:
-        struct_errors[function.name] = _get_function_struct_errors(
-            function, rules['struct-rules'])
-
-    # regexp
-    comments_spans = _get_comment_spans(context)
-    functions_info = [(function.name, (function.start_line, function.end_line))
-                      for function in function_list]
-    regexp_errors = fmt_analysis(content, rules['regexp-rules'], comments_spans,
-                                 functions_info)
-
-    # concatenate data
-    data = []
-    for function in function_list:
-        func_dict = _from_function_to_dict(function, path)
-        func_dict['struct_rules'] = struct_errors[function.name]
-        func_dict['regexp_rules'] = regexp_errors[function.name]
-
-        data.append(func_dict)
-
-    return _nest_file(data)
-
-
 def parse_content(path, content, parsing_type='errors'):
     # TODO: make sense of parsing_type
     Reader = get_reader_for(path)
-    context = flizard.FileInfoBuilder(path)
+    context = FileInfoBuilder(path)
 
     reader = Reader(context)
 
@@ -189,9 +130,3 @@ def parse_content(path, content, parsing_type='errors'):
     _update_function_names(context, path)
 
     return context
-
-
-def parse_errors(path, content, rules):
-    context = parse_content(path, content, parsing_type='errors')
-
-    return _process_errors(context, path, content, rules)

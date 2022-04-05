@@ -3,13 +3,13 @@
 
 import lizard
 
-from flinter.parser.flizard.readers import (
+from flizard.readers import (
     FortranReader,
     PythonReader,
 )
-from flinter.parser.flizard.fortran_states import FortranVariablesState
-from flinter.parser.flizard.python_states import PythonVariablesState
-from flinter.parser.flizard import processors as pflizard
+from flizard.fortran_states import FortranVariablesState
+from flizard.python_states import PythonVariablesState
+from flizard import processors as pflizard
 
 
 def add_state_to_reader(reader, state):

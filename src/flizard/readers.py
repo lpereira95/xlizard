@@ -1,3 +1,3 @@
 
-from flinter.parser.flizard.python import PythonReader
-from flinter.parser.flizard.fortran import FortranReader
+from flizard.python import PythonReader
+from flizard.fortran import FortranReader
