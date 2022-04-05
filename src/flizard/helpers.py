@@ -6,9 +6,9 @@ import lizard
 from flizard.readers import (
     FortranReader,
     PythonReader,
+    FortranVariablesState,
+    PythonVariablesState,
 )
-from flizard.fortran_states import FortranVariablesState
-from flizard.python_states import PythonVariablesState
 from flizard import processors as pflizard
 
 
