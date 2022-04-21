@@ -2,18 +2,6 @@
 import lizard
 
 
-class FunctionInfo(lizard.FunctionInfo):
-    # TODO: to be removed when lizard is released
-
-    @property
-    def length(self):
-        return self.end_line - self.start_line + 1
-
-    @length.setter
-    def length(self, *args):
-        pass
-
-
 class FileInfoBuilder(lizard.FileInfoBuilder):
 
     def __init__(self, filename):
@@ -23,14 +11,14 @@ class FileInfoBuilder(lizard.FileInfoBuilder):
         self.pop_nesting_fncs = []
         self.before_return_fncs = []
 
-        self.global_pseudo_function = FunctionInfo('*global*',
-                                                   self.fileinfo.filename, 0)
+        self.global_pseudo_function = lizard.FunctionInfo('*global*',
+                                                          self.fileinfo.filename, 0)
         self.current_function = self.global_pseudo_function
         self.global_pseudo_function.type = 'file'
 
     def try_new_function(self, name):
         # TODO: replace by super().try_new_function(name) when lizard is released
-        self.current_function = FunctionInfo(
+        self.current_function = lizard.FunctionInfo(
             self.with_namespace(name),
             self.fileinfo.filename,
             self.current_line)
