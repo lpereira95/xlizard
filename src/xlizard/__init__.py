@@ -108,6 +108,19 @@ def _nest_file(data):
     return child
 
 
+def load_content(filename):
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            content = file.read()
+
+        return content
+
+    except UnicodeDecodeError:
+        print(f"File {filename} is not encoded in UTF-8")
+
+    return None
+
+
 def parse_content(path, content, parsing_type='errors'):
     # TODO: make sense of parsing_type
     Reader = get_reader_for(path)
