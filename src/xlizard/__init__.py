@@ -1,19 +1,18 @@
 
 import os
 
-from flizard.readers import (
+from xlizard.readers import (
     PythonReader as fPythonReader,
     FortranReader as fFortranReader,
 )
 
 # TODO: move to flinter?
-from flizard.helpers import set_processors
-from flizard._lizard import FileInfoBuilder
+from xlizard.helpers import set_processors
+from xlizard._lizard import FileInfoBuilder
 
 __version__ = '0.1.0'
 
 
-# TODO: rename to xlizard?
 # TODO: some things should be moved back to flinter
 
 

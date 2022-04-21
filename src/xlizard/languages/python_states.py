@@ -3,7 +3,7 @@
 
 from lizard_languages.code_reader import CodeStateMachine
 
-from flizard.processors import _LocalVarsStateProcessor
+from xlizard.processors import _LocalVarsStateProcessor
 
 
 # TODO: make it work without '\n'

@@ -3,13 +3,13 @@
 
 import lizard
 
-from flizard.readers import (
+from xlizard.readers import (
     FortranReader,
     PythonReader,
     FortranVariablesState,
     PythonVariablesState,
 )
-from flizard import processors as pflizard
+from xlizard import processors as pxlizard
 
 
 def add_state_to_reader(reader, state):
@@ -50,12 +50,12 @@ def _get_error_processors(reader):
     always_yield = isinstance(reader, FortranReader) or isinstance(reader, PythonReader)
 
     processors = [
-        pflizard.regexp_converter,
-        pflizard.token_len_counter,
+        pxlizard.regexp_converter,
+        pxlizard.token_len_counter,
         lizard.preprocessing,
-        pflizard.CommentProcessor(reader),
-        pflizard.PositionSetter(reader),
-        lambda tokens, reader: pflizard.line_counter(
+        pxlizard.CommentProcessor(reader),
+        pxlizard.PositionSetter(reader),
+        lambda tokens, reader: pxlizard.line_counter(
             tokens, reader, always_yield=always_yield),
         # lizard.token_counter,
         # lizard.condition_counter,
